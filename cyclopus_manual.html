@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEO-ALADDIN++ v1.0 - Agent Manual</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%);
+            color: #212529;
+            line-height: 1.6;
+        }
+
+        .header {
+            text-align: center;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #fd5e53 0%, #ff4757 100%);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .language-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+            background: white;
+            border-radius: 15px;
+            padding: 0.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .toggle-btn {
+            padding: 1rem 2.5rem;
+            background: transparent;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            border-radius: 12px;
+            font-size: 1rem;
+        }
+
+        .toggle-btn.active {
+            background: linear-gradient(135deg, #fd5e53 0%, #ff4757 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(253, 94, 83, 0.3);
+        }
+
+        .language-section {
+            display: none;
+        }
+
+        .language-section.active {
+            display: block;
+        }
+
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e9ecef;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: #212529;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, #fd5e53 0%, #ff4757 100%);
+            border-radius: 2px;
+        }
+
+        .capabilities-overview {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .capabilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .capability-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 16px;
+            padding: 2.5rem;
+            border-left: 6px solid #fd5e53;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .capability-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(253, 94, 83, 0.1), transparent);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .capability-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .capability-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .capability-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: #212529;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .capability-list {
+            list-style: none;
+            font-size: 1.05rem;
+        }
+
+        .capability-list li {
+            padding: 0.6rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: #495057;
+        }
+
+        .capability-list li::before {
+            content: "→";
+            color: #fd5e53;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+
+        .tools-section {
+            margin-top: 3rem;
+        }
+
+        .tools-intro {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #6c757d;
+            margin-bottom: 3rem;
+            font-style: italic;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .tool-category {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .tool-category:hover {
+            border-color: #fd5e53;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .tool-category h3 {
+            color: #212529;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tool-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .tool-item {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            border-left: 4px solid #dee2e6;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tool-item:hover {
+            background: #f8f9fa;
+            transform: translateX(8px);
+            border-left-color: #fd5e53;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .visual-section {
+            margin-top: 3rem;
+        }
+
+        .visual-intro {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #6c757d;
+            margin-bottom: 3rem;
+            font-style: italic;
+        }
+
+        .visual-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .visual-item {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 0.95rem;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .visual-item:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 15px 35px rgba(253, 94, 83, 0.15);
+            border-color: #fd5e53;
+            background: linear-gradient(135deg, #fd5e53 0%, #ff4757 100%);
+            color: white;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 3rem;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: white;
+            margin-top: 4rem;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .footer h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+        }
+
+        .footer p {
+            color: #adb5bd;
+            font-size: 1.1rem;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #fd5e53 0%, #ff4757 100%);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            font-weight: 700;
+            display: inline-block;
+            margin: 0 0.2rem;
+        }
+
+        .tools-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+            color: #6c757d;
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .capabilities-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .section {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">CYCLOPUS</h1>
+        <h2 class="subtitle">(GEO Aladdin+) BlackSpace OpenAI SZ</h2>
+        <span class="version-badge">GEO-ALADDIN++ v1.0</span>
+    </div>
+
+    <div class="container">
+        <div class="language-toggle">
+            <button class="toggle-btn active" onclick="showLanguage('english')">ENGLISH</button>
+            <button class="toggle-btn" onclick="showLanguage('russian')">РУССКИЙ</button>
+        </div>
+
+        <!-- ENGLISH SECTION -->
+        <div id="english" class="language-section active">
+            <div class="section">
+                <h2 class="section-title">INSTRUCTION MANUAL</h2>
+                <p class="capabilities-overview"><strong>For Analysts, Strategists, Portfolio Managers</strong></p>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">WHAT I CAN DO</h2>
+                <p class="capabilities-overview">Capabilities Overview</p>
+                
+                <div class="capabilities-grid">
+                    <div class="capability-card">
+                        <div class="capability-icon">🧠</div>
+                        <div class="capability-title">INTELLIGENCE & SIGNALS</div>
+                        <ul class="capability-list">
+                            <li>Predict P_relief, P_tighten, E[T_relief] up to <span class="highlight">10 years</span></li>
+                            <li>Real-time geopolitical event detection with Bayesian update</li>
+                            <li>Scenarios: Relief, Tighten, SQ, Escalation, Ceasefire, EnergyShock</li>
+                            <li>Asset class signals (OW/UW/N) + hedges via DSL</li>
+                            <li>Disinfo-filtering (<span class="highlight">1100+ techniques</span> incl. CIA/NSA-grade)</li>
+                            <li>Game-theory models: RU-UA-US-EU equilibrium</li>
+                            <li>Macro nowcast: RU GDP, CPI, FX, fiscal, energy flows</li>
+                            <li>Compliance: sanction-safe, law-compliant, fully auditable</li>
+                        </ul>
+                    </div>
+
+                    <div class="capability-card">
+                        <div class="capability-icon">🧾</div>
+                        <div class="capability-title">EXPLAINABILITY & EVIDENCE</div>
+                        <ul class="capability-list">
+                            <li>SHAP + causal drivers, counterfactuals</li>
+                            <li>Evidence packs: timestamped source quotes + links</li>
+                            <li>Confidence metrics (numeric + calibrated)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">50 CALCULATORS</h2>
+                <p class="tools-intro">Risk, Probability, Macro, GameTheory, Hedge</p>
+                
+                <div class="tools-grid">
+                    <div class="tool-category">
+                        <h3>Core Predictions</h3>
+                        <div class="tool-list">
+                            <div class="tool-item">1. P_relief_τ (τ=1m…10y)</div>
+                            <div class="tool-item">2. P_tighten_τ, P_SQ_τ</div>
+                            <div class="tool-item">3. E[T_relief], E[T_tighten]</div>
+                            <div class="tool-item">4. Hazard λ_relief(t), λ_tighten(t)</div>
+                            <div class="tool-item">5. Shock elasticities (dAsset/dP_case)</div>
+                        </div>
+                    </div>
+
+                    <div class="tool-category">
+                        <h3>Macro & Nowcast</h3>
+                        <div class="tool-list">
+                            <div class="tool-item">6. Nowcast: GDP, CPI, FX flows, reserves, fiscal gap</div>
+                            <div class="tool-item">15. Energy export nowcast (oil/gas/LNG)</div>
+                            <div class="tool-item">16. Alt-data signals (satellite, rail, mobility)</div>
+                            <div class="tool-item">17. Macro-asset regression sensitivities</div>
+                        </div>
+                    </div>
+
+                    <div class="tool-category">
+                        <h3>Portfolio & Risk</h3>
+                        <div class="tool-list">
+                            <div class="tool-item">7. Portfolio CVaR, MaxDD, IR, Sharpe, beta</div>
+                            <div class="tool-item">8. Hedge optimality (Greeks, sensitivity, payoff)</div>
+                            <div class="tool-item">18. Liquidity score & stress radar</div>
+                            <div class="tool-item">19. PnL attribution (tree, scenario-level)</div>
+                            <div class="tool-item">20. Trade sensitivity (by sector/country)</div>
+                        </div>
+                    </div>
+
+                    <div class="tool-category">
+                        <h3>Game Theory & Politics</h3>
+                        <div class="tool-list">
+                            <div class="tool-item">9. Game-theory equilibria (Stackelberg/Bayesian)</div>
+                            <div class="tool-item">10. Scenario case trees, transition matrix</div>
+                            <div class="tool-item">11. Stress: historical, hypothetical, regime-shift</div>
+                            <div class="tool-item">12. Vote-whip prediction (P(pkg|h))</div>
+                            <div class="tool-item">13. Sanctions exposure score (entity-level)</div>
+                            <div class="tool-item">14. Probabilistic backtest (Brier, LogLoss, ECE)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tools-footer">
+                    … (total: 50+ calculators — customizable)
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">50 VISUALIZATIONS</h2>
+                <p class="visual-intro">Bloomberg-class UI</p>
+                
+                <div class="visual-grid">
+                    <div class="visual-item">1. Scenario pie</div>
+                    <div class="visual-item">2. Prob timelines</div>
+                    <div class="visual-item">3. Hazard/Survival curves</div>
+                    <div class="visual-item">4. Case→Asset matrix</div>
+                    <div class="visual-item">5. Geo heatmap</div>
+                    <div class="visual-item">6. Sanctions timeline</div>
+                    <div class="visual-item">7. Policy calendar</div>
+                    <div class="visual-item">8. Vote-whip chart</div>
+                    <div class="visual-item">9. Event ticker</div>
+                    <div class="visual-item">10. Shock map</div>
+                    <div class="visual-item">11. Causal graph</div>
+                    <div class="visual-item">12. Counterfactual pane</div>
+                    <div class="visual-item">13. Stress sliders</div>
+                    <div class="visual-item">14. Hedge panel</div>
+                    <div class="visual-item">15. Reflexivity gauge</div>
+                    <div class="visual-item">16. Panic/Greed index</div>
+                    <div class="visual-item">17. Alt-data dashboard</div>
+                    <div class="visual-item">18. Energy export chords</div>
+                    <div class="visual-item">19. Trade Sankey flows</div>
+                    <div class="visual-item">20. Microstructure tape</div>
+                    <div class="visual-item">21. Order book depth</div>
+                    <div class="visual-item">22. OFZ yield curve</div>
+                    <div class="visual-item">23. Eurobond spreads</div>
+                    <div class="visual-item">24. CDS timeline</div>
+                    <div class="visual-item">25. RUB stress gauge</div>
+                    <div class="visual-item">26. FX correlation heatmap</div>
+                    <div class="visual-item">27. Commodity forward curves</div>
+                    <div class="visual-item">28. Bank/Exporter/Importer impact tiles</div>
+                    <div class="visual-item">29. Risk wall</div>
+                    <div class="visual-item">30. Portfolio heatmap</div>
+                    <div class="visual-item">31. PnL decomposition tree</div>
+                    <div class="visual-item">32. Attribution panel</div>
+                    <div class="visual-item">33. Liquidity radar</div>
+                    <div class="visual-item">34. Shock budget</div>
+                    <div class="visual-item">35. Risk budget</div>
+                    <div class="visual-item">36. Evidence drawer</div>
+                    <div class="visual-item">37. Confidence bars</div>
+                    <div class="visual-item">38. Calibration card</div>
+                    <div class="visual-item">39. Reliability gauges</div>
+                    <div class="visual-item">40. ROC-AUC visual</div>
+                    <div class="visual-item">41. Brier/LogLoss gauges</div>
+                    <div class="visual-item">42. Explainability cards</div>
+                    <div class="visual-item">43. Game theory dashboard</div>
+                    <div class="visual-item">44. DSL rule simulator</div>
+                    <div class="visual-item">45. Scenario tree explorer</div>
+                    <div class="visual-item">46. Event-source graph</div>
+                    <div class="visual-item">47. Veracity score heatmap</div>
+                    <div class="visual-item">48. T-score ranker</div>
+                    <div class="visual-item">49. SanctionsGraph explorer</div>
+                    <div class="visual-item">50. Gamification HUD</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RUSSIAN SECTION -->
+        <div id="russian" class="language-section">
+            <div class="section">
+                <h2 class="section-title">ИНСТРУКЦИЯ</h2>
+                <p class="capabilities-overview"><strong>Для аналитиков, стратегов, портфельных управляющих</strong></p>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">ВОЗМОЖНОСТИ</h2>
+                <p class="capabilities-overview">Обзор функционала</p>
+                
+                <div class="capabilities-grid">
+                    <div class="capability-card">
+                        <div class="capability-icon">🧠</div>
+                        <div class="capability-title">РАЗВЕДКА И СИГНАЛЫ</div>
+                        <ul class="capability-list">
+                            <li>Прогнозы P_relief, P_tighten, E[T_relief] до <span class="highlight">10 лет</span> вперёд</li>
+                            <li>Онлайн-детект событий с Байесовским пересчётом</li>
+                            <li>Сценарии: Смягчение, Усиление, Статус-кво, Эскалация, Перемирие, Энерго-шок</li>
+                            <li>Сигналы по классам активов РФ (OW/UW/N) + хеджи через DSL</li>
+                            <li>Фильтрация дизы (<span class="highlight">1100+ методов</span>, включая уровень CIA/NSA)</li>
+                            <li>Модели теории игр: RU-UA-US-EU</li>
+                            <li>Макро-nowcast: ВВП, ИПЦ, ФХ-потоки, резервы, экспорт энергии</li>
+                            <li>Юридическая чистота: фильтры по санкциям и законам, логирование</li>
+                        </ul>
+                    </div>
+
+                    <div class="capability-card">
+                        <div class="capability-icon">🧾</div>
+                        <div class="capability-title">ОБЪЯСНЕНИЯ И ДОКАЗАТЕЛЬСТВА</div>
+                        <ul class="capability-list">
+                            <li>SHAP + каузальный анализ, контрфакты</li>
+                            <li>Пакет доказательств: цитаты, источники, таймстемпы</li>
+                            <li>Уверенность (цифровая и откалиброванная)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">50 КАЛЬКУЛЯТОРОВ</h2>
+                <p class="tools-intro">Риски, Вероятности, Макро, Хедж, Игры</p>
+                
+                <div class="tools-grid">
+                    <div class="tool-category">
+                        <h3>Основные Прогнозы</h3>
+                        <div class="tool-list">
+                            <div class="tool-item">1. P_relief_τ (τ=1м…10л)</div>
+                            <div class="tool-item">2. P_tighten_τ, P_SQ_τ</div>
+                            <div class="tool-item">3. E[T_relief], E[T_tighten]</div>
+                            <div class="tool-item">4. λ(t) для смягчения/усиления</div>
+                            <div class="tool-item">5. Эластичности шоков (dAsset/dP_case)</div>
+                        </div>
+                    </div>
+
+                    <div class="tool-category">
+                        <h3>Макро и Nowcast</h3>
+                        <div class="tool-list">
+                            <div class="tool-item">6. Nowcast: ВВП, ИПЦ, ФХ, бюджет, экспорт</div>
+                            <div class="tool-item">15. Экспорт энергии (прогноз)</div>
+                            <div class="tool-item">16. Alt-data (спутники, ж/д, мобилити)</div>
+                            <div class="tool-item">17. Чувствительность активов к макро</div>
+                        </div>
+                    </div>
+
+                    <div class="tool-category">
+                        <h3>Портфель и Риски</h3>
+                        <div class="tool-list">
+                            <div class="tool-item">7. CVaR, MaxDD, IR, Sharpe, beta</div>
+                            <div class="tool-item">8. Оптимальные хеджи (чувствительность, Greeks)</div>
+                            <div class="tool-item">18. Оценка ликвидности и стресс-радар</div>
+                            <div class="tool-item">19. PnL-дерево</div>
+                            <div class="tool-item">20. Торговая чувствительность (по секторам)</div>
+                        </div>
+                    </div>
+
+                    <div class="tool-category">
+                        <h3>Теория Игр и Политика</h3>
+                        <div class="tool-list">
+                            <div class="tool-item">9. Равновесия теории игр</div>
+                            <div class="tool-item">10. Сценарные деревья, матрицы переходов</div>
+                            <div class="tool-item">11. Stress-тесты (история, гипотеза, смена режима)</div>
+                            <div class="tool-item">12. Модель голосований (P(pkg|h))</div>
+                            <div class="tool-item">13. Оценка санкционной уязвимости (по сущностям)</div>
+                            <div class="tool-item">14. Backtest вероятностей (Brier, LogLoss, ECE)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tools-footer">
+                    … (всего: 50+ калькуляторов — настраиваемые)
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">50 ВИЗУАЛИЗАЦИЙ</h2>
+                <p class="visual-intro">Уровень Bloomberg</p>
+                
+                <div class="visual-grid">
+                    <div class="visual-item">1. Круг сценариев</div>
+                    <div class="visual-item">2. Вероятностные таймлайны</div>
+                    <div class="visual-item">3. Кривые Hazard/Survival</div>
+                    <div class="visual-item">4. Матрица сценарий→актив</div>
+                    <div class="visual-item">5. Гео-карта</div>
+                    <div class="visual-item">6. Таймлайн санкций</div>
+                    <div class="visual-item">7. Календарь политики</div>
+                    <div class="visual-item">8. График голосований</div>
+                    <div class="visual-item">9. Тикер событий</div>
+                    <div class="visual-item">10. Карта шоков</div>
+                    <div class="visual-item">11. Каузальный граф</div>
+                    <div class="visual-item">12. Панель контрфактов</div>
+                    <div class="visual-item">13. Слайдеры стресса</div>
+                    <div class="visual-item">14. Панель хеджей</div>
+                    <div class="visual-item">15. Индикатор рефлексивности</div>
+                    <div class="visual-item">16. Индекс страха/жадности</div>
+                    <div class="visual-item">17. Альтернативная панель</div>
+                    <div class="visual-item">18. Энергетические аккорды</div>
+                    <div class="visual-item">19. Sankey-потоки</div>
+                    <div class="visual-item">20. Лента микроструктуры</div>
+                    <div class="visual-item">21. Глубина стакана</div>
+                    <div class="visual-item">22. Кривая ОФЗ</div>
+                    <div class="visual-item">23. Спреды евробондов</div>
+                    <div class="visual-item">24. CDS таймлайн</div>
+                    <div class="visual-item">25. Индикатор стресса по рублю</div>
+                    <div class="visual-item">26. Корреляционная матрица ФХ</div>
+                    <div class="visual-item">27. Фьючерсные кривые коммодов</div>
+                    <div class="visual-item">28. Плитки импорта/экспорта/банков</div>
+                    <div class="visual-item">29. Стена рисков</div>
+                    <div class="visual-item">30. Тепловая карта портфеля</div>
+                    <div class="visual-item">31. Дерево PnL</div>
+                    <div class="visual-item">32. Панель атрибуции</div>
+                    <div class="visual-item">33. Радар ликвидности</div>
+                    <div class="visual-item">34. Бюджет шока</div>
+                    <div class="visual-item">35. Бюджет риска</div>
+                    <div class="visual-item">36. Ящик доказательств</div>
+                    <div class="visual-item">37. Полосы уверенности</div>
+                    <div class="visual-item">38. Карточки калибровки</div>
+                    <div class="visual-item">39. Надёжность прогнозов</div>
+                    <div class="visual-item">40. ROC-AUC</div>
+                    <div class="visual-item">41. Графики Brier/LogLoss</div>
+                    <div class="visual-item">42. Карточки explainability</div>
+                    <div class="visual-item">43. Теория игр — дашборд</div>
+                    <div class="visual-item">44. DSL-симулятор правил</div>
+                    <div class="visual-item">45. Дерево сценариев</div>
+                    <div class="visual-item">46. Граф источников событий</div>
+                    <div class="visual-item">47. Карта верности источников</div>
+                    <div class="visual-item">48. Ранжирование по T-score</div>
+                    <div class="visual-item">49. Просмотр SanctionsGraph</div>
+                    <div class="visual-item">50. Панель геймификации</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h3>CYCLOPUS • GEO-ALADDIN++ v1.0 • BlackSpace OpenAI SZ</h3>
+        <p>Professional Geopolitical Intelligence & Risk Management System</p>
+    </div>
+
+    <script>
+        function showLanguage(lang) {
+            // Hide all sections
+            document.querySelectorAll('.language-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(lang).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Add interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scroll reveal animation
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Initialize elements for animation
+            document.querySelectorAll('.capability-card, .tool-category, .visual-item, .section').forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = `opacity 0.8s ease ${index * 0.1}s, transform 0.8s ease ${index * 0.1}s`;
+                observer.observe(el);
+            });
+
+            // Enhanced hover effects for visual items
+            document.querySelectorAll('.visual-item').forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.08) translateY(-8px)';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1) translateY(0)';
+                });
+            });
+
+            // Click effects for tool items
+            document.querySelectorAll('.tool-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    this.style.background = '#fd5e53';
+                    this.style.color = 'white';
+                    this.style.transform = 'translateX(15px) scale(1.02)';
+                    setTimeout(() => {
+                        this.style.background = 'white';
+                        this.style.color = '#495057';
+                        this.style.transform = 'translateX(0) scale(1)';
+                    }, 300);
+                });
+            });
+
+            // Floating animation for capability icons
+            document.querySelectorAll('.capability-icon').forEach(icon => {
+                icon.style.animation = 'float 4s ease-in-out infinite';
+            });
+
+            // Add CSS animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-12px); }
+                }
+                
+                @keyframes pulse {
+                    0%, 100% { opacity: 1; transform: scale(1); }
+                    50% { opacity: 0.9; transform: scale(1.05); }
+                }
+                
+                .highlight {
+                    animation: pulse 3s ease-in-out infinite;
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Typing effect for main title
+            const title = document.querySelector('.title');
+            const originalText = title.textContent;
+            title.textContent = '';
+            let i = 0;
+            const typeWriter = () => {
+                if (i < originalText.length) {
+                    title.textContent += originalText.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 150);
+                }
+            };
+            setTimeout(typeWriter, 1000);
+        });
+
+        // Smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
